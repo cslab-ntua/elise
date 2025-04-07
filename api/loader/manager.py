@@ -535,7 +535,6 @@ class LoadManager:
     def import_from_json(self, file: Optional[str] = None):
         if file is None:
             print("Can't build LoadManager if no file is given")
-        pass
             return
  
         with open(file, "r") as fd:
