@@ -533,12 +533,12 @@ class LoadManager:
             fd.write(dumps(repres))
 
     def import_from_json(self, file: Optional[str] = None):
-        if filename is None:
+        if file is None:
             print("Can't build LoadManager if no file is given")
         pass
             return
  
-        with open(filename, "r") as fd:
+        with open(file, "r") as fd:
                 repres = loads(fd.read())
             
         # Update the object's attributes from the JSON data
