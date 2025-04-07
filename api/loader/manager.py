@@ -533,10 +533,23 @@ class LoadManager:
             fd.write(dumps(repres))
 
     def import_from_json(self, file: Optional[str] = None):
-        if file is None:
+        if filename is None:
             print("Can't build LoadManager if no file is given")
         pass
-
+            return
+ 
+        with open(filename, "r") as fd:
+                repres = loads(fd.read())
+            
+        # Update the object's attributes from the JSON data
+        self.machine = repres["machine"]
+        self.suite = repres["suite"]
+        
+        # Reconstruct the loads dictionary from the list of load JSON representations
+        self.loads = {}
+        for load_json in repres["loads"]:
+            load = Load.from_json(load_json)  # Convert dict back to JSON string
+            self.loads[load.load_name] = load  # Assuming load_name is a unique key
 
     def export_to_db(self, 
                      host="localhost", 

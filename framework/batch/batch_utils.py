@@ -146,6 +146,8 @@ class BatchCreator:
             elif "db" in workload:
                 # A mongo database url
                 lm.import_from_db(host=workload["db"], dbname="storehouse")
+            elif "json" in workload:
+                lm.import_from_json(workload["json"])
             else:
                 raise RuntimeError("Couldn't provide a way to create a LoadManager")
 
