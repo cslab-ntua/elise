@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..")
 ))
 
-from common.utils import define_logger, handler_and_formatter, envvar_bool_val, profiling_ctx
+from common.utils import define_logger, handler_and_formatter, envvar_bool_val, profiling_ctx, pad_message
 logger = define_logger()
 
 def __get_gantt_representation(self):
@@ -148,9 +148,6 @@ def patch(evt_logger, extra_features):
         evt_logger.get_workload = MethodType(__get_workload, evt_logger)
         evt_logger.get_animated_cluster = MethodType(__get_animated_cluster, evt_logger)
 
-def pad_message(msg):
-    DEFAULT_MSG_LEN = 1024
-    return msg + b'\0' * (DEFAULT_MSG_LEN- len(msg))
 
 def single_simulation(sim_batch, server_ipaddr, server_port, webui=False):
     """The function that defines the simulation loop and actions
@@ -208,23 +205,6 @@ def single_simulation(sim_batch, server_ipaddr, server_port, webui=False):
 
     # Close communication socket
     sock.close()
-
-    # If executed by WebUI
-    # data = {
-    #     # Graphs
-    #     "Gantt diagram": evt_logger.get_gantt_representation(),
-    #     "Unused cores": evt_logger.get_unused_cores_graph(),
-    #     "Jobs throughput": evt_logger.get_jobs_throughput(),
-    #     "Waiting queue": evt_logger.get_waiting_queue_graph(),
-    #     ### "Resource usage": logger.get_resource_usage(),
-    #     ### "Jobs utilization": evt_logger.get_jobs_utilization(default_evt_logger),
-    #     ### "Cluster history": evt_logger.get_animated_cluster(),
-        
-    #     # Extra metrics
-    #     ## "Makespan speedup": default_cluster_makespan / cluster.makespan,
-    #     "input": evt_logger.get_input()
-    # }
-
 
     # If there are actions provided for this rank
     if actions != []:

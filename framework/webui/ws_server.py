@@ -4,6 +4,14 @@ from time import time, sleep
 import threading
 from websocket import create_connection
 
+import os
+import sys
+
+sys.path.append(os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..")
+))
+from common.utils import pad_message
+
 def get_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.settimeout(0)
@@ -18,10 +26,6 @@ def get_ip():
     return IP
 
 ws_ipaddr = get_ip()
-
-def pad_message(msg):
-    DEFAULT_MSG_LEN = 1024
-    return msg + b'\0' * (DEFAULT_MSG_LEN - len(msg))
 
 def start_tcp_server(host="127.0.0.1", port=55501):
     

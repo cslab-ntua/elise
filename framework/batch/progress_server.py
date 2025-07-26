@@ -12,13 +12,9 @@ sys.path.append(os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..")
 ))
 
-from common.utils import define_logger
+from common.utils import define_logger, pad_message
 
 logger = define_logger()
-
-def pad_message(msg):
-    DEFAULT_MSG_LEN = 1024
-    return msg + b'\0' * (DEFAULT_MSG_LEN - len(msg))
 
 def progress_server(server_ipaddr="127.0.0.1", server_port=54321, connections=5, export_reports="", webui=False):
 
