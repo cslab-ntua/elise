@@ -57,7 +57,7 @@ def print_hierarchy(class_hierarchy, class_name, level=0):
         if class_name in cls_val["bases"]:
             print_hierarchy(class_hierarchy, cls, level + 1)
 
-def import_schedulers_hierarchy(folder_path):
+def import_class_hierarchy(folder_path):
     class_hierarchy = build_class_hierarchy(folder_path)
     for cls_key, cls_val in class_hierarchy.items():
         _, module = import_module(cls_val["filepath"])

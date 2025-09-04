@@ -3,9 +3,10 @@
 This document will contain definitions about the acronyms, names and idioms used in the framework
 They will be in alphabetical order.
 
+
 - **Schematic:**
-    - a synonym for **Simulation Configuration**
-- **Simulation Configuration:** 
-    - composition of workloads, schedulers and actions
+    - a collection of simulation configurations
     - is represented by a YAML file
-    - is also named as **schematic** and the YAML file as schematic, simulation configuration file or configuration file in short
+- **Simulation Configuration:** 
+    - composition of a workload, scheduler and action
+- **Workload:** the total number of jobs streamed into a cluster during a simulation run

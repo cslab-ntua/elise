@@ -19,10 +19,6 @@ def import_module(path):
     spec.loader.exec_module(module)
     return spec.name, module
 
-def pad_message(msg):
-    DEFAULT_MSG_LEN = 1024
-    return msg + b'\0' * (DEFAULT_MSG_LEN- len(msg))
-
 def get_ancestry_tree() -> list[str]:
     proc = psutil.Process()
     ancestors = [f"{proc.pid}: {proc.name()}"]
