@@ -8,8 +8,6 @@ sys.path.append(os.path.abspath(
         )
     ))
 
-from procset import ProcSet
-
 
 class JobCharacterization:
     COMPACT = 0
@@ -42,6 +40,9 @@ class Job:
         # Important identifiers of the job
         self.job_id = job_id
         self.job_name = job_name
+        
+        # User identifiers
+        self.user_id = -1
 
         # Cores/Nodes resources
         self.num_of_processes = num_of_processes if num_of_processes > 0 else 1
@@ -64,7 +65,7 @@ class Job:
         self.max_speedup: float = 1
         self.min_speedup: float = 1
 
-        # Job performance tag
+        # Job tag for models
         self.job_tag = list()
 
         # Job characterization for schedulers
@@ -97,9 +98,7 @@ class Job:
                 and self.job_character == job.job_character
 
     def __repr__(self) -> str:
-        #return f"[{self.job_id}:{self.job_name}],(T:{self.remaining_time}),(C:{len(self.assigned_cores)}),(S:{self.sim_speedup})"
         return str(self.__dict__)
-        return f"[{self.job_id}:{self.job_name},T:{self.remaining_time},S:{self.sim_speedup}]"
 
     def get_avg_speedup(self) -> float:
         return self.avg_speedup

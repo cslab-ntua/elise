@@ -44,6 +44,9 @@ class ComputeEngine:
         self.logger.scheduler = self.scheduler
 
         self.debug_logger = None
+        
+        # Features for compengine
+        self.wall_time_ratio = 0
 
     # Database preloaded queue setup
     def setup_preloaded_jobs(self) -> None:
@@ -241,7 +244,9 @@ class ComputeEngine:
 
         # Set the finish time of the job
         job.finish_time = self.cluster.makespan
-        job.current_state = JobState.FINISHED
+        
+        if job.current_state not in (JobState.ABORTED, JobState.FAILED):
+            job.current_state = JobState.FINISHED
 
         # Clean job and return resources back to host
         for hostname in job.assigned_hosts:
@@ -334,6 +339,11 @@ class ComputeEngine:
 
             # "Execute" job
             job.remaining_time -= min_rem_time
+            
+            # If job surpassed the wall time then abort it
+            if job.start_time + job.wall_time * (1 + self.wall_time_ratio) <= self.cluster.makespan:
+                job.remaining_time = 0
+                job.current_state = JobState.ABORTED
 
             if job.remaining_time == 0:
                 self.clean_job_from_hosts(job)
