@@ -54,14 +54,21 @@ class Scheduler(ABC):
     def find_suitable_nodes(self, 
                             req_cores: int, 
                             socket_conf: tuple,
-                            immediate=False):
+                            immediate=False,
+                            omit_hosts=[]):
         """ Returns hosts and their procsets that a job can use as resources
         + req_cores   : required cores for the job
         + socket_conf : under a certain socket mapping/configuration
         """
         cores_per_host = sum(socket_conf)
         to_be_allocated = dict()
-        for hostname, host in self.cluster.hosts.items():
+        available_hosts = {
+            hostname: host
+            for hostname, host in self.cluster.hosts.items()
+            if hostname not in omit_hosts
+        }
+
+        for hostname, host in available_hosts.items():
             host_sockets = host.sockets
             # If under the specifications of the required cores and socket 
             # allocation *takes advantage of short circuit for idle hosts
@@ -86,7 +93,7 @@ class Scheduler(ABC):
         """
         return 1.0
 
-    def allocation(self, job: Job, socket_conf: tuple, immediate=False) -> bool:
+    def allocation(self, job: Job, socket_conf: tuple, immediate=False, omit_hosts=[]) -> bool:
         """We allocate first to the idle hosts and then to the in use hosts
         """
         """Co-allocate a job to an executing job under a specific socket mapping/configuration
@@ -98,7 +105,7 @@ class Scheduler(ABC):
 
         # Get only the suitable hosts
         suitable_hosts, req_okay = self.find_suitable_nodes(job.num_of_processes, 
-                                                            socket_conf, immediate=immediate)
+                                                            socket_conf, immediate=immediate, omit_hosts=omit_hosts)
 
         # If no suitable hosts where found
         if not req_okay:
@@ -126,10 +133,10 @@ class Scheduler(ABC):
 
         return True
 
-    def compact_allocation(self, job: Job, immediate=False) -> bool:
+    def compact_allocation(self, job: Job, immediate=False, omit_hosts=[]) -> bool:
         """Compact and exclusive allocation of a job
         """
-        return self.allocation(job, self.cluster.full_socket_allocation, immediate=immediate)
+        return self.allocation(job, self.cluster.full_socket_allocation, immediate=immediate, omit_hosts=omit_hosts)
 
     def pop(self, queue: list[Job]) -> Job:
         """Get and remove an object from a queue
@@ -167,3 +174,4 @@ class Scheduler(ABC):
         """A backfill algorithm for the scheduler
         """
         return False
+
